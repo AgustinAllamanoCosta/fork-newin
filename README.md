@@ -1,20 +1,24 @@
 # *neWin* - Open new Window(s) or Tab(s) on Windows Terminal or KDE Konsole and executes bash command(s).
 
-Open new window(s)/tab(s) with a bash shell & execute the commands given. Works with KDE Konsole or Windows Terminal in WSL without any code changes or config.
+Open new window(s)/tab(s) with a bash shell & execute the commands given. 
+
+Works with KDE Konsole or Windows Terminal in WSL without any code changes or config.
 
 Written in Nodejs/TypeScript, but it works for everyone.
 
 ## Motivation
 
-I needed a way to start tasks on new windows (or tabs) automatically, mainly from within my nodejs scripts.
+I needed a powerful way to start tasks on new windows (or tabs) automatically, mainly from within my nodejs scripts.
 
-For example, don't we all want to `npm run dev` to start an API server AND its integration tests, but on 2 separate windows?
+For example, don't we all want to `npm run dev` to start an API server AND its integration tests, but on 2 separate windows? In a tiny line of code?
 
 I needed it to be: 
  
-- without external bash scripts like I used to crack it, but straight from package.json.
+- without external bash scripts like I used to crack the problem, but straight from package.json.
 
-- laconic and powerful: with sane defaults, open multiple windows and run multiple commands.
+- laconic, with sane defaults
+
+- powerful, able to open multiple windows and run multiple commands and set a meaningful title. 
 
 - portable, at least on Linux KDE & Windows Terminal, with no code/package changes.  
 
