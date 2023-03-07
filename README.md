@@ -47,7 +47,7 @@ On WSL:
 
 * Make sure you have [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab) installed.
 
-* Make sure $WSL_INTEROP env variable is set and it's working (i.e you should be able to execute "$ wt.exe" etc on your WSL shell)
+* Make sure `$WSL_INTEROP` env variable is set and it's working (i.e you should be able to execute "$ wt.exe" etc on your WSL shell)
 
 ## Usage
 
@@ -123,9 +123,9 @@ Options:
 
 ## Contributing
 
-Help to improve *neWin* are mostly welcome. Please open an issue if you have issues or suggestions. 
+Help to improve *neWin* is absolutelly welcome! Please open an issue if you have issues or suggestions. 
 
-Most of all, as I have no time or way to support other distros / platforms, it would be great if someone can implement the MacOS or other Linux consoles (eg gnome-terminal). PRs (with tests) are mostly welcome. 
+Most of all, as I have no time or way to support other distros / platforms, it would be great if someone can implement the MacOS and other Linux consoles (eg gnome-terminal). PRs (with tests) are mostly welcome. 
 
 ## References 
 
