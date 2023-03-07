@@ -1,0 +1,86 @@
+{
+  "name": "newin",
+  "version": "1.0.0",
+  "description": "Opens a new Window or Tab on WSL Windows Terminal or KDE Konsole",
+
+  "scripts": {
+    "****************** A CLI Global Setup *****": "",
+
+    "################# Running ": "",
+
+    "### dev: build & test in watch, in separate Konsoles!": "",
+    "dev": "newin 'npm run start:watch' 'npm run test:watch'",
+    "start": "npm run build",
+    "start:watch": "npm run build:watch",
+
+    "################# Testing ": "",
+    "test": "NODE_ENV=test npx jest --coverage --runInBand --detectOpenHandles --verbose --forceExit",
+    "test:ci": "NODE_ENV=test npx jest --ci --reporters=default --reporters=jest-junit --runInBand --detectOpenHandles --forceExit",
+    "test:watch": "NODE_ENV=test npx jest --runInBand --watchAll --no-cache",
+    "test:coverage": "NODE_ENV=test nyc --reporter=lcov --reporter=html npm test && nyc report",
+
+    "################# Build & Typescript": "",
+    "build": "npm-run-all build:ts",
+    "build:ts": "mkdir -p dist && npx tsc --listEmittedFiles --project tsconfig.json",
+    "build:watch": "mkdir -p dist && npx tsc --listEmittedFiles --watch --project tsconfig.json",
+
+    "################# Clean, Chores and installing": "",
+    "clean": "npx rimraf dist coverage tmp .nyc_output result",
+
+    "################# Formatting & Linting": "",
+    "format": "npm-run-all prettier lint:noFail prettier",
+    "prettier": "npx prettier --write \"**/*.{ts,js,json}\"",
+    "lint": "npx eslint --ignore-path .gitignore \"**/*.{js,ts}\"",
+    "lint:fix": "npx eslint --fix --ignore-path .gitignore \"**/*.{js,ts}\"",
+    "lint:noFail": "npx eslint --fix --ignore-path .gitignore \"**/*.{js,ts}\" || exit 0"
+  },
+  "dependencies": {
+    "commander": "^8.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.4",
+    "rimraf": "^4.1.2",
+    "ts-jest": "^29.0.5",
+    "typescript": "^4.9.5"
+  },
+  "files": [
+    "dist/"
+  ],
+  "types": "./dist/",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "preferGlobal": true,
+  "bin": {
+    "newin": "dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anodynos/newin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/anodynos/newin/issues"
+  },
+  "homepage": "https://github.com/anodynos/newin#readme",
+  "keywords": [
+    "wsl",
+    "cmd",
+    "open",
+    "new",
+    "tab",
+    "windows",
+    "terminal",
+    "konsole",
+    "console",
+    "exec",
+    "fork",
+    "spawn",
+    "cli",
+    "tabs",
+    "window",
+    "automate"
+  ],
+  "author": "Angelos Pikoulas",
+  "license": "MIT"
+}
