@@ -1,7 +1,7 @@
 {
   "name": "newin",
-  "version": "1.0.1",
-  "description": "Open new window(s)/tab(s) & execute bash command(s) on WSL Windows Terminal or KDE Konsole",
+  "version": "1.0.2",
+  "description": "CLI command to open new window(s)/tab(s) & execute bash command(s) on WSL Windows Terminal or KDE Konsole",
   "scripts": {
     "****************** A CLI Global Setup *****": "",
     "################# Running ": "",

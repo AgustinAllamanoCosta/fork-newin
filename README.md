@@ -1,10 +1,18 @@
-# *neWin* - Open new Window(s) or Tab(s) on Windows Terminal or KDE Konsole and executes bash command(s).
+# *neWin*
 
-Open new window(s)/tab(s) with a bash shell & execute the commands given. 
+CLI command to open new Window(s) or Tab(s) on WSL Windows Terminal or KDE Konsole and executes bash command(s).
 
-Works with KDE Konsole or Windows Terminal in WSL without any code changes or config.
+```bash
+$ newin --workdir ~/myproject 'npm run start' 'npm run test:watch'
+
+# executes each command in a separate new window and exit.
+```
+
+Works with KDE Konsole or Windows Terminal in WSL, without any code changes or config.
 
 Written in Nodejs/TypeScript, but it works for everyone.
+
+Perfect companion for your package.json scripts in a multi-flavor team!
 
 ## Motivation
 
