@@ -22,7 +22,7 @@ I needed it to be:
 
 - portable, at least on Linux KDE & Windows Terminal, with no code/package changes.  
 
-Unfortunately, it's much more complicated that one would think in 2023. I found [wttab](https://github.com/lalilaloe/wttab) & [ttab](https://github.com/mklement0/ttab but none was good for my case. I was actually inspired and based initial code on [wttab](https://github.com/lalilaloe/wttab). Unfortunately as it was M$ Windows-only, it wasn't possible to use it in a dual Windows/native linux as-is, and also there were some other breaking issues.
+Unfortunately, it's much more complicated that one would think in 2023. I found [wttab](https://github.com/lalilaloe/wttab) & [ttab](https://github.com/mklement0/ttab) but none was working for my case. I was actually inspired and based initial code on [wttab](https://github.com/lalilaloe/wttab). Unfortunately as it was M$ Windows-only, it wasn't possible to use it in a dual Windows/native linux as-is, and also there were some other breaking issues.
 
 The *neWin* in comparison is:
 
