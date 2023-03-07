@@ -107,7 +107,7 @@ gives rise to the title "/project: $ start:watch"
     if (cmds.length === 0) cmds.push('')
 
     // Windows Terminal: execute each one at once
-    if (isWSL) {
+    if (isWSL()) {
       for (const cmd of cmds) {
         const fullCommand = getFullCommand(cmd, options)
         if (debug || options.debug)
