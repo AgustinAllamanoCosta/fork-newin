@@ -5,10 +5,12 @@ CLI command to open new Window(s) or Tab(s) on WSL Windows Terminal or KDE Konso
 ```bash
 $ newin --workdir ~/myproject 'npm run start' 'npm run test:watch'
 
-# executes each command in a separate new window and exit.
+# executes each command in a separate new window and exits.
 ```
 
 Works with KDE Konsole or Windows Terminal in WSL, without any code changes or config.
+
+On Windows, it can be called as-is from WSL, PowerShell or cmd.
 
 Written in Nodejs/TypeScript, but it works for everyone.
 
@@ -34,7 +36,7 @@ Unfortunately, it's much more complicated that one would think in 2023. I found 
 
 The *neWin* in comparison is:
 
-* Same command works on both WSL and native linux - keeps you package.json scripts consistent.
+* Same command works on both WSL, PowerShell and native Linux - keeps you package.json scripts consistent.
 
 * Multiple commands can be executed, each opening in a new window! So in your package.json's scripts you can have 
 
@@ -45,15 +47,17 @@ The *neWin* in comparison is:
 
 to start a development API server & the integration tests on separate windows, in the most terse way ;-)
 
-* Simplified codebase in TypeScript, where PowerShell is discarded (cause it's too complicated & mostly useless) and KDE Konsole for native linux usage is added instead. Easier and more useful in my case, take your pick. I don't care about powershell, since WSL works perfectly. In the future I'd love *neWin* to just support all of *Nix (Macs & other Linux consoles).
+In the future I'd love *neWin* to just support more of *Nix options (Macs & other Linux consoles).
 
 ## Install
 
 `npm install -g newin`
 
-On WSL:
+On WSL/Windows/PowerShell/Cmd:
 
 * Make sure you have [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab) installed.
+
+On WSL:
 
 * Make sure `$WSL_INTEROP` env variable is set and it's working (i.e you should be able to execute "$ wt.exe" etc on your WSL shell)
 
@@ -65,13 +69,13 @@ Usage: newin [options] [cmds...]
 
 Opens multiple new windows/tabs on KDE Konsole or Windows Terminal (WT) & execute given bash command(s).
 
-  * Works as-is from either WSL linux shell or a native Linux KDE konsole shell!
+  * Works as-is from either WSL Linux shell, PowerShell, cmd or a native Linux KDE konsole shell!
 
   * It uses the default Konsole / WT Profile.
 
   * It uses a workdir relative to CWD or an absolute dir.
 
-  * On WSL, it always calls "source /etc/environment" to set the correct path and environment variables.
+  * On WSL/Windows it always calls "source /etc/environment" to set the correct path and environment variables.
 
   Notes:
 
@@ -107,7 +111,7 @@ Options:
                                Window.
   -t, --title <title>          (WT Only) Specify title for new Window/Tab. It suppresses native app titles.
   
-  It defaults to <lastPath>: $ <bashCmd>
+  It defaults to "<lastPath>: $ <bashCmd>" where "lastPath" is taken from "/some/project/path/lastpath"
   
   A nodejs specific tweek is that if a bash command starts with "npm run", "npm-run-all" or "npx", these are removed!
   
@@ -116,7 +120,7 @@ Options:
   gives rise to the title "/project: $ start:watch"
   
   -o --notitle                 Leave the title alone!
-  -c --color <hexcode>         (WT Only) Set color of Tab.
+  -c --color <hexcode>         (WT Only) Set color of Tab - no need to add # and quotes, but you can do so.
   -e --echo                    (WT Only) Echo bash command before executing.
   -l --close                   (Konsole only) Close the initial session automatically when
                                it ends (Konsole executed by default with --hold).
@@ -126,12 +130,12 @@ Options:
                                uses the profile settings (colors, fonts etc) BUT RUNS ON
                                CURRENT DISTRO, for some esoteric Microsoft reason ;-(
   --debug                      Enable debugging, outputs the command(s) before executing.
-  -h, --help                   display help for command
+  -h, --help                   Display help for command
 ```
 
 ## Contributing
 
-Help to improve *neWin* is absolutelly welcome! Please open an issue if you have issues or suggestions. 
+Help to improve *neWin* is absolutely welcome! Please open an issue if you have issues or suggestions. 
 
 Most of all, as I have no time or way to support other distros / platforms, it would be great if someone can implement the MacOS and other Linux consoles (eg gnome-terminal). PRs (with tests) are mostly welcome. 
 

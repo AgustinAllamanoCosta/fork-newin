@@ -1,7 +1,10 @@
 import * as process from 'node:process'
 import * as path from 'node:path'
 
+export const isWindows = () => process.platform === 'win32'
 export const isWSL = () => !!process.env.WSL_INTEROP
+export const isWSLOrWindows = () => isWindows() || isWSL()
+
 
 export type TnewinOptions = {
   close?: boolean
@@ -19,17 +22,19 @@ export type TnewinOptions = {
 
 const getArguments = (options: TnewinOptions, cmd: string): string => {
   const wtArgs = []
-  if (options.newTab) wtArgs.push(isWSL() ? `-w 0` : '--new-tab')
+  if (options.newTab) wtArgs.push(isWSLOrWindows() ? `-w 0` : '--new-tab')
 
   if (options.profile) wtArgs.push(`--profile "${options.profile}"`)
 
-  if (isWSL()) {
+  if (isWSLOrWindows()) {
+    wtArgs.push(`-d "${options.resolvedDir}"`)
+    
     // title handling
     if (!options.notitle) {
       let title = options.title
       if (!options.title && cmd) {
         // set to last path item + bash cmd while replacing "npm run", "npx " etc
-        const lastPathItem = options.resolvedDir.split('/').reverse()[0]
+        const lastPathItem = options.resolvedDir.split(isWindows() ? '\\' : '/').reverse()[0]
         cmd = ['npm run ', 'npm-run-all ', 'npx '].reduce(
           (acc, replaceMe) =>
             cmd.startsWith(replaceMe) ? acc.slice(replaceMe.length - 1) : acc,
@@ -60,19 +65,17 @@ export const getFullCommand = (cmd, options: TnewinOptions): string => {
   if (!options.workdir) options.workdir = '.'
 
   let fullCommand
-  if (isWSL()) {
+  if (isWSLOrWindows()) {
     const wtBashCmds = [`source /etc/environment`]
     options.resolvedDir = ['/', '~'].includes(options.workdir[0])
       ? options.workdir
       : path.resolve(process.cwd(), options.workdir)
 
-    wtBashCmds.push(`cd "${options.resolvedDir}"`)
-
     if (cmd) {
-      if (options.echo) wtBashCmds.push(`echo '(newin WSL) $ ${cmd}'`)
-      wtBashCmds.push(cmd)
-    }
-    wtBashCmds.push(`exec bash 2>&1`)
+      if (options.echo) wtBashCmds.push(`echo '(newin ${isWSL() ?  'WSL' : 'Windows'}) $ ${cmd}'`)
+      wtBashCmds.push(cmd) // execute cmd and quit
+    } else
+      wtBashCmds.push(`exec bash 2>&1`) // empty bash waiting for input, if no cmd is given
 
     fullCommand = `wt.exe ${getArguments(options, cmd)}bash -c "${wtBashCmds.join(' && ')}"`
   } else {

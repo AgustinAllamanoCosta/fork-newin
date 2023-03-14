@@ -3,7 +3,7 @@
 import { exec } from 'node:child_process'
 import * as process from 'node:process'
 import { Command } from 'commander'
-import { getFullCommand, isWSL, TnewinOptions } from './commandAndArguments'
+import { getFullCommand, isWSL, isWSLOrWindows, TnewinOptions } from './commandAndArguments'
 
 const debug = false
 
@@ -88,18 +88,14 @@ gives rise to the title "/project: $ start:watch"
     '(Konsole only) Run the new instance of Konsole in a separate process.'
   )
   .option(
-    '-p, --profile "profileName"',
+    '-p, --profile [profileName]',
     'Use this profile, by name. NOTE: on Windows Terminal, it uses the profile settings (colors, fonts etc) BUT RUNS ON CURRENT DISTRO, for some esoteric Microsoft reason ;-('
   )
   .option('--debug', 'Enable debugging, outputs the command(s) before executing.')
   .action((cmds, options: TnewinOptions) => {
+    // prettier-ignore
     if (debug || options.debug)
-      console.log(
-        'neWin DEBUG: executing commands',
-        cmds.length,
-        'commands:\n',
-        cmds.join('\n')
-      )
+      console.log('neWin DEBUG: executing', cmds.length, 'commands:\n', cmds.join('\n'))
 
     if (!Array.isArray(cmds))
       throw new Error(`neWin Error: wrong cmds, should be an array: ${JSON.stringify(cmds)}`)
@@ -107,18 +103,18 @@ gives rise to the title "/project: $ start:watch"
     if (cmds.length === 0) cmds.push('')
 
     // Windows Terminal: execute each one at once
-    if (isWSL()) {
+    if (isWSLOrWindows()) {
       for (const cmd of cmds) {
         const fullCommand = getFullCommand(cmd, options)
         if (debug || options.debug)
-          console.debug('neWin(WSL) DEBUG: Executing single command:\n', fullCommand)
+          console.debug(`neWin(${isWSL() ? 'WSL' : 'Windows'}) DEBUG: Executing single command:\n`, fullCommand)
         exec(fullCommand, execCallback)
       }
     } else {
       // Konsole / Native linux: map & join cmds & execute all together
       const allFullCommands = cmds.map((cmd) => getFullCommand(cmd, options)).join('\n')
       if (debug || options.debug)
-        console.debug('neWin(native) DEBUG: Executing all commands:\n', allFullCommands)
+        console.debug('neWin(linux) DEBUG: Executing all commands at once:\n', allFullCommands)
 
       exec(allFullCommands, execCallback)
       process.exit(0)
