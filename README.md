@@ -32,6 +32,8 @@ I needed it to be:
 
 - portable, at least on Linux KDE & Windows Terminal, with no code/package changes.  
 
+- supporting Windows mapped Drive letters - eg Z: pointing to \\wsl.localhost\ubuntu
+
 Unfortunately, it's much more complicated that one would think in 2023. I found [wttab](https://github.com/lalilaloe/wttab) & [ttab](https://github.com/mklement0/ttab) but none was working for my case. I was actually inspired and based initial code on [wttab](https://github.com/lalilaloe/wttab). Unfortunately as it was M$ Windows-only, it wasn't possible to use it in a dual Windows/native linux as-is, and also there were some other breaking issues.
 
 The *neWin* in comparison is:
@@ -87,9 +89,14 @@ Opens multiple new windows/tabs on KDE Konsole or Windows Terminal (WT) & execut
 
     $ newin                                          # opens a new window on CWD
 
-    $ newin -workdir /mnt                            # opens a new window on /mnt
+    $ newin -workdir /mnt/projects                   # opens a new window on an absolute path on WSL (/mnt/projects in this case)
+    $ newin -workdir ~/projects                      # opens a new window on an absolute path on WSL (~/projects in this case)
+    
+    $ newin -workdir z:/projects                     # opens a new window on a Windows absolute path (z:/projects in this case). 
+                                                     $ It is correctly translated when called from Windows, if the drive letter is mapped to a WSL Linux instance (eg Z: mapped to \\wsl.localhost\ubuntu)
 
-    $ newin -workdir ./projects                      # opens a new window on ./projects, relative to CWD
+    $ newin -workdir projects                        # opens a new window on ./projects, relative to CWD
+    $ newin -workdir ./projects                      #                  same ^
 
     $ newin 'npm -v' 'node -v'                       # execute 'npm -v' on a new window and 'node -v' on another one.
 

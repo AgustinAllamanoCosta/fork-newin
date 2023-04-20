@@ -3,6 +3,8 @@
 import { exec } from 'node:child_process'
 import * as process from 'node:process'
 import { Command } from 'commander'
+import * as networkDrive from 'windows-network-drive'
+
 import { getFullCommand, isWSL, isWSLOrWindows, TnewinOptions } from './commandAndArguments'
 
 const debug = false
@@ -65,15 +67,10 @@ program
   .option(
     '-t, --title <title>',
     `(WT Only) Specify title for new Window/Tab. It suppresses native app titles.
-
 It defaults to <lastPath>: $ <bashCmd>
-
-A nodejs specific tweek is that if a bash command starts with "npm run", "npm-run-all" or "npx", these are removed!
-
-Eg $ newin  --workdir '~/project' 'npm run start:watch'
-
-gives rise to the title "/project: $ start:watch"
-`
+- A nodejs specific tweak is that if a bash command starts with "npm run", "npm-run-all" or "npx", these are removed!
+  For example $ newin --workdir '~/project' 'npm run start:watch'
+  becomes the title "/project: $ start:watch"`
   )
   .option('-o --notitle', 'Leave the title alone!')
 
@@ -92,10 +89,10 @@ gives rise to the title "/project: $ start:watch"
     'Use this profile, by name. NOTE: on Windows Terminal, it uses the profile settings (colors, fonts etc) BUT RUNS ON CURRENT DISTRO, for some esoteric Microsoft reason ;-('
   )
   .option('--debug', 'Enable debugging, outputs the command(s) before executing.')
-  .action((cmds, options: TnewinOptions) => {
+  .action(async (cmds, options: TnewinOptions) => {
     // prettier-ignore
     if (debug || options.debug)
-      console.log('neWin DEBUG: executing', cmds.length, 'commands:\n', cmds.join('\n'))
+    console.log('neWin DEBUG: executing', cmds.length, 'commands:\n', cmds.join('\n'))
 
     if (!Array.isArray(cmds))
       throw new Error(`neWin Error: wrong cmds, should be an array: ${JSON.stringify(cmds)}`)
@@ -104,6 +101,8 @@ gives rise to the title "/project: $ start:watch"
 
     // Windows Terminal: execute each one at once
     if (isWSLOrWindows()) {
+      if (networkDrive.isWinOs()) options.mappedDrives = await networkDrive.list()
+
       for (const cmd of cmds) {
         const fullCommand = getFullCommand(cmd, options)
         if (debug || options.debug)

@@ -1,10 +1,10 @@
 import * as process from 'node:process'
-import * as path from 'node:path'
+import * as upath from 'upath'
+import * as networkDrive from 'windows-network-drive'
 
 export const isWindows = () => process.platform === 'win32'
 export const isWSL = () => !!process.env.WSL_INTEROP
 export const isWSLOrWindows = () => isWindows() || isWSL()
-
 
 export type TnewinOptions = {
   close?: boolean
@@ -18,6 +18,7 @@ export type TnewinOptions = {
   title?: string
   notitle?: boolean
   workdir?: string
+  mappedDrives?: Awaited<ReturnType<typeof networkDrive.list>> // { driveLetter: string, path: string, ...}
 }
 
 const getArguments = (options: TnewinOptions, cmd: string): string => {
@@ -28,7 +29,7 @@ const getArguments = (options: TnewinOptions, cmd: string): string => {
 
   if (isWSLOrWindows()) {
     wtArgs.push(`-d "${options.resolvedDir}"`)
-    
+
     // title handling
     if (!options.notitle) {
       let title = options.title
@@ -61,21 +62,41 @@ const getArguments = (options: TnewinOptions, cmd: string): string => {
   return argsStr ? `${argsStr} ` : ``
 }
 
+// paths starting with "driveLetter:\xxx" or Unix home "~" or Unix path "/xxx..."
+export const absolutePathRegExp = /^(\w:[\\\/].*)|(^[~\/]\/?.*)/
+
 export const getFullCommand = (cmd, options: TnewinOptions): string => {
   if (!options.workdir) options.workdir = '.'
 
   let fullCommand
   if (isWSLOrWindows()) {
     const wtBashCmds = [`source /etc/environment`]
-    options.resolvedDir = ['/', '~'].includes(options.workdir[0])
+    options.resolvedDir = absolutePathRegExp.test(options.workdir)
       ? options.workdir
-      : path.resolve(process.cwd(), options.workdir)
+      : upath.resolve(process.cwd(), options.workdir)
+    
+    // replace "Z:/some/path" => "\\\\wsl.localhost\\ubuntara/some/path
+    const driveLetters = Object.keys(options.mappedDrives || {})
+    driveLetters.forEach(driveLetter => {
+      const upperCaseDriveLetter = driveLetter.toUpperCase();
+      const resolvedDirUpperCaseDriveLetter = options.resolvedDir[0].toUpperCase() + options.resolvedDir.slice(1)
+      if (resolvedDirUpperCaseDriveLetter.startsWith(upperCaseDriveLetter + ':')) {
+        options.resolvedDir = resolvedDirUpperCaseDriveLetter.replace(upperCaseDriveLetter + ':', options.mappedDrives[driveLetter].path)
+      }
+    })
+    
+    if (options.debug) {
+      console.debug(
+        `neWin(${isWSL() ? 'WSL' : 'Windows'}) DEBUG: options.resolvedDir =`,
+        options.resolvedDir
+      )
+    }
 
     if (cmd) {
-      if (options.echo) wtBashCmds.push(`echo '(newin ${isWSL() ?  'WSL' : 'Windows'}) $ ${cmd}'`)
+      if (options.echo)
+        wtBashCmds.push(`echo '(newin ${isWSL() ? 'WSL' : 'Windows'}) $ ${cmd}'`)
       wtBashCmds.push(cmd) // execute cmd and quit
-    } else
-      wtBashCmds.push(`exec bash 2>&1`) // empty bash waiting for input, if no cmd is given
+    } else wtBashCmds.push(`exec bash 2>&1`) // empty bash waiting for input, if no cmd is given
 
     fullCommand = `wt.exe ${getArguments(options, cmd)}bash -c "${wtBashCmds.join(' && ')}"`
   } else {

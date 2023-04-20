@@ -1,6 +1,6 @@
 {
   "name": "newin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "CLI command to open new window(s)/tab(s) & execute bash command(s) on WSL Windows Terminal or KDE Konsole",
   "scripts": {
     "****************** A CLI Global Setup *****": "",
@@ -28,7 +28,9 @@
     "lint:noFail": "npx eslint --fix --ignore-path .gitignore \"**/*.{js,ts}\" || exit 0"
   },
   "dependencies": {
-    "commander": "^8.3.0"
+    "commander": "^10.0.1",
+    "upath": "^2.0.1",
+    "windows-network-drive": "^4.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
