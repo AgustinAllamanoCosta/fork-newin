@@ -93,7 +93,7 @@ Opens multiple new windows/tabs on KDE Konsole or Windows Terminal (WT) & execut
     $ newin -workdir ~/projects                      # opens a new window on an absolute path on WSL (~/projects in this case)
     
     $ newin -workdir z:/projects                     # opens a new window on a Windows absolute path (z:/projects in this case). 
-                                                     $ It is correctly translated when called from Windows, if the drive letter is mapped to a WSL Linux instance (eg Z: mapped to \\wsl.localhost\ubuntu)
+                                                     # It is correctly translated when called from Windows, if the drive letter is mapped to a WSL Linux instance (eg Z: mapped to \\wsl.localhost\ubuntu)
 
     $ newin -workdir projects                        # opens a new window on ./projects, relative to CWD
     $ newin -workdir ./projects                      #                  same ^

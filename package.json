@@ -1,6 +1,6 @@
 {
   "name": "newin",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "CLI command to open new window(s)/tab(s) & execute bash command(s) on WSL Windows Terminal or KDE Konsole",
   "scripts": {
     "****************** A CLI Global Setup *****": "",

@@ -42,9 +42,14 @@ program
 
     $ newin                                          # opens a new window on CWD
 
-    $ newin -workdir /mnt                            # opens a new window on /mnt
+    $ newin -workdir /mnt/projects                   # opens a new window on an absolute path on WSL (/mnt/projects in this case)
+    $ newin -workdir ~/projects                      # opens a new window on an absolute path on WSL (~/projects in this case)
+    
+    $ newin -workdir z:/projects                     # opens a new window on a Windows absolute path (z:/projects in this case).
+                                                     # It is correctly translated when called from Windows, if the drive letter is mapped to a WSL Linux instance (eg Z: mapped to \\\\wsl.localhost\ubuntu)
 
-    $ newin -workdir ./projects                      # opens a new window on ./projects, relative to CWD
+    $ newin -workdir projects                        # opens a new window on ./projects, relative to CWD
+    $ newin -workdir ./projects                      #                  same ^
 
     $ newin 'npm -v' 'node -v'                       # execute 'npm -v' on a new window and 'node -v' on another one.
 
