@@ -8,6 +8,8 @@ $ newin --workdir ~/myproject 'npm run start' 'npm run test:watch'
 # executes each command in a separate new window and exits.
 ```
 
+See more examples below or `newin --help` ;-)
+
 Works with KDE Konsole or Windows Terminal in WSL, without any code changes or config.
 
 On Windows, it can be called as-is from WSL, PowerShell or cmd.
