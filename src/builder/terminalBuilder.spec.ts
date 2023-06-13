@@ -1,12 +1,11 @@
-import { getFullCommandWindows, isWSLOrWindows, TnewinOptions } from '../commandAndArguments';
-import { konsoleStrategy } from './strategies';
+import { getFullCommandWindows, getFullKonsoleCommand, isWSLOrWindows, TnewinOptions } from '../commandAndArguments';
 import { terminalBuilder } from './terminalBuilder';
 
 jest.mock('node:child_process');
 jest.mock('../commandAndArguments');
 const mockIsWSLOrWindows = isWSLOrWindows as jest.Mock
 const mockGetFullCommandWindows = getFullCommandWindows as jest.Mock
-const mockKonsoleStrategy = konsoleStrategy as jest.Mock
+const mockGetFullKonsoleCommand = getFullKonsoleCommand as jest.Mock
 
 describe('Terminal Builder', () => {
 
@@ -38,7 +37,7 @@ describe('Terminal Builder', () => {
 
             await terminalBuilder(cmds, debug, options)
 
-            expect(mockKonsoleStrategy).toHaveBeenCalledWith(cmds[0],options)
+            expect(mockGetFullKonsoleCommand).toHaveBeenCalledWith(cmds[0],options)
         })
     })
 })
