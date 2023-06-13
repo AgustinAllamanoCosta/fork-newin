@@ -4,19 +4,11 @@ import { Command } from 'commander'
 
 import { TnewinOptions } from './commandAndArguments'
 import { terminalBuilder } from './builder/terminalBuilder'
-import { DESCRIPTION } from 'immutable'
+import { DESCRIPTION } from './immutable'
+import { execCallback } from 'utils'
+import { exec } from 'node:child_process'
 
 const debug = false
-
-const execCallback = (error, stdout, stderr) => {
-  if (error) {
-    console.log(`neWin error: ${error.message}`)
-  } else if (stderr) {
-    console.log(`neWin stderr: ${stderr}`)
-  } else if (stdout) {
-    console.log(`neWin stdout: ${stdout}`)
-  }
-}
 
 const program = new Command()
 program
@@ -65,7 +57,11 @@ It defaults to <lastPath>: $ <bashCmd>
 
     if (cmds.length === 0) cmds.push('')
 
-    await terminalBuilder(cmds,debug,execCallback,options)
+    const terminals: Array<any> = await terminalBuilder(cmds,debug,options)
+    terminals.forEach((terminal)=>{
+      exec(terminal, execCallback)
+    })
+    process.exit(0)
 
   })
   .parse(process.argv)

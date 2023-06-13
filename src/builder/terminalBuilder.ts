@@ -1,38 +1,43 @@
-import { konsoleStrategy } from 'builder/strategies'
-import { exec } from 'node:child_process'
+import { konsoleStrategy } from './strategies'
 import * as networkDrive from 'windows-network-drive'
 import { getFullCommandWindows, isWSL, isWSLOrWindows, TnewinOptions } from '../commandAndArguments'
 
-const linuxTerminalStrategies = {
-    konsole: konsoleStrategy
-}
-
-export const terminalBuilder = async (cmds, debug: boolean, execCallback, options: TnewinOptions) => {
+export const terminalBuilder = async (cmds, debug: boolean, options: TnewinOptions) => {
     if (isWSLOrWindows()) {
-        await buildWindows(cmds,debug,execCallback,options)
+        return await buildWindows(cmds, debug, options)
     } else {
-        buildLinux(cmds,debug,execCallback,options)
+        return buildLinux(cmds, debug, options)
     }
 }
 
-const buildWindows = async (cmds, debug, execCallback ,options: TnewinOptions) => {
+const buildWindows = async (cmds, debug, options: TnewinOptions) => {
     if (networkDrive.isWinOs()) options.mappedDrives = await networkDrive.list()
 
+    const terminals = []
     for (const cmd of cmds) {
         const fullCommand = getFullCommandWindows(cmd, options)
         if (debug || options.debug)
             console.debug(`neWin(${isWSL() ? 'WSL' : 'Windows'}) DEBUG: Executing single command:\n`, fullCommand)
-        exec(fullCommand, execCallback)
+        terminals.push(fullCommand)
     }
+    return terminals
 }
 
-const buildLinux = (cmds,debug,execCallback, options: TnewinOptions)=>{
+const buildLinux = (cmds, debug, options: TnewinOptions) => {
     const terminal = process.env.TERM
-    const buildCommand = linuxTerminalStrategies[terminal ? terminal : 'konsole']
-    const fullCommand = buildCommand(cmds,options)
-    if (debug || options.debug)
-        console.debug('neWin(linux) DEBUG: Executing all commands at once:\n', fullCommand)
 
-    exec(fullCommand, execCallback)
-    process.exit(0)
+    const buildCommand = selectLinuxStrategy(terminal)
+    const terminals = buildCommand(cmds, options)
+    
+    if (debug || options.debug)
+        console.debug('neWin(linux) DEBUG: Executing all commands at once:\n', terminals)
+    
+    return terminals
+}
+
+const selectLinuxStrategy = (terminalType: string)=>{
+    switch(terminalType){
+        default:
+            return konsoleStrategy
+    }
 }

@@ -52,7 +52,6 @@ const getWindowsArguments = (options: TnewinOptions, cmd: string): string => {
     wtArgs.push(`--tabColor "${options.color}"`)
   }
 
-
   const argsStr = wtArgs.join(' ')
   return argsStr ? `${argsStr} ` : ``
 }
@@ -75,6 +74,7 @@ const getLinuxArguments = (options: TnewinOptions, cmd: string): string => {
 export const absolutePathRegExp = /^(\w:[\\\/].*)|(^[~\/]\/?.*)/
 
 export const getFullCommandWindows = (cmd, options: TnewinOptions): string => {
+
   if (!options.workdir) options.workdir = '.'
   let fullCommand
   const wtBashCmds = [`source /etc/environment`]
@@ -109,12 +109,10 @@ export const getFullCommandWindows = (cmd, options: TnewinOptions): string => {
   return fullCommand
 }
 
-export const getFullLinuxCommand = (cmd, options: TnewinOptions): string => {
+export const getFullKonsoleCommand = (cmd, options: TnewinOptions): string => {
   if (!options.workdir) options.workdir = '.'
 
-  let fullCommand
-  // Konsole only
-  fullCommand = `konsole ${getLinuxArguments(
+  const fullCommand = `konsole ${getLinuxArguments(
     options,
     cmd
   )}--show-tabbar --hide-menubar --workdir "${options.workdir}" ${cmd ? '-e ' : ''}"${cmd}" &`

@@ -11,7 +11,7 @@ TnewinOptions:
   title: string
   workdir: string
  */
-import { absolutePathRegExp, getFullCommandWindows, getFullLinuxCommand, TnewinOptions } from './commandAndArguments'
+import { absolutePathRegExp, getFullCommandWindows, getFullKonsoleCommand, TnewinOptions } from './commandAndArguments'
 import * as process from 'node:process'
 
 describe('neWin Linux', () => {
@@ -34,7 +34,7 @@ describe('neWin Linux', () => {
       options,
     )} becomes:\n$ ${expected}\n`, () => {
       process.env.WSL_INTEROP = isWSLOrWindows ? 'WSL_INTEROP' : ''
-      expect(getFullLinuxCommand(cmd, options)).toEqual(expected)
+      expect(getFullKonsoleCommand(cmd, options)).toEqual(expected)
     })
   })
 })
