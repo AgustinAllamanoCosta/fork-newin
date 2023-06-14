@@ -11,7 +11,11 @@ TnewinOptions:
   title: string
   workdir: string
  */
-import { absolutePathRegExp, getFullCommandWindows, getFullKonsoleCommand } from './commandAndArguments'
+import {
+  absolutePathRegExp,
+  getFullCommandWindows,
+  getFullKonsoleCommand,
+} from './commandAndArguments'
 import * as process from 'node:process'
 import { TnewinOptions } from 'types/types'
 
@@ -30,14 +34,17 @@ describe('neWin Linux', () => {
         separate: true,
       }, `konsole --separate --show-tabbar --hide-menubar --workdir "." -e "npx foobar" &`]
     ]
-  )('Works for', (cmd, options: TnewinOptions | any, expected: string, isWSLOrWindows?: boolean) => {
-    it(`${isWSLOrWindows ? 'WSL' : 'Linux'}: '${cmd}' with options ${JSON.stringify(
-      options,
-    )} becomes:\n$ ${expected}\n`, () => {
-      process.env.WSL_INTEROP = isWSLOrWindows ? 'WSL_INTEROP' : ''
-      expect(getFullKonsoleCommand(cmd, options)).toEqual(expected)
-    })
-  })
+  )(
+    'Works for',
+    (cmd, options: TnewinOptions | any, expected: string, isWSLOrWindows?: boolean) => {
+      it(`${isWSLOrWindows ? 'WSL' : 'Linux'}: '${cmd}' with options ${JSON.stringify(
+        options
+      )} becomes:\n$ ${expected}\n`, () => {
+        process.env.WSL_INTEROP = isWSLOrWindows ? 'WSL_INTEROP' : ''
+        expect(getFullKonsoleCommand(cmd, options)).toEqual(expected)
+      })
+    }
+  )
 })
 describe('neWin Windows', () => {
   describe.each(
@@ -68,15 +75,18 @@ describe('neWin Windows', () => {
         },
       },
         `wt.exe -d "\\\\wsl.localhost\\ubuntara/mnt/projects" --title "Foo Title" --suppressApplicationTitle bash -c "source /etc/environment && npm-run-all start:watch"`, true],
-    ],
-  )('Works for', (cmd, options: TnewinOptions | any, expected: string, isWSLOrWindows?: boolean) => {
-    it(`${isWSLOrWindows ? 'WSL' : 'Linux'}: '${cmd}' with options ${JSON.stringify(
-      options,
-    )} becomes:\n$ ${expected}\n`, () => {
-      process.env.WSL_INTEROP = isWSLOrWindows ? 'WSL_INTEROP' : ''
-      expect(getFullCommandWindows(cmd, options)).toEqual(expected)
-    })
-  })
+    ]
+  )(
+    'Works for',
+    (cmd, options: TnewinOptions | any, expected: string, isWSLOrWindows?: boolean) => {
+      it(`${isWSLOrWindows ? 'WSL' : 'Linux'}: '${cmd}' with options ${JSON.stringify(
+        options
+      )} becomes:\n$ ${expected}\n`, () => {
+        process.env.WSL_INTEROP = isWSLOrWindows ? 'WSL_INTEROP' : ''
+        expect(getFullCommandWindows(cmd, options)).toEqual(expected)
+      })
+    }
+  )
 
   describe.each(
     // prettier-ignore
@@ -99,11 +109,10 @@ describe('neWin Windows', () => {
       ['./project\\newin', false],
       ['z\\project\\newin', false],
       ['.\\z\\project\\newin', false]
-    ],
+    ]
   )('absolutePathRegExp test', (path: string, isAbsolute: boolean) => {
     it(`${path} is ${isAbsolute ? 'absolute' : 'relative'}`, () => {
       expect(absolutePathRegExp.test(path)).toEqual(isAbsolute)
     })
   })
-
 })

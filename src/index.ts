@@ -12,9 +12,7 @@ const debug: boolean = false
 
 const program: Command = new Command()
 program
-  .description(
-    DESCRIPTION
-  )
+  .description(DESCRIPTION)
   .arguments('[cmds...]')
   .option(
     '-d --workdir <workdir>',
@@ -57,11 +55,10 @@ It defaults to <lastPath>: $ <bashCmd>
 
     if (cmds.length === 0) cmds.push('')
 
-    for(const cmd of cmds){
+    for (const cmd of cmds) {
       const terminal: string = await terminalBuilder(cmd, debug, options)
       exec(terminal, execCallback)
     }
     process.exit(0)
-
   })
   .parse(process.argv)

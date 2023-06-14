@@ -21,8 +21,7 @@ const getWindowsArguments = (options: TnewinOptions, cmd: string): string => {
       // set to last path item + bash cmd while replacing "npm run", "npx " etc
       const lastPathItem = options.resolvedDir.split(isWindows() ? '\\' : '/').reverse()[0]
       cmd = ['npm run ', 'npm-run-all ', 'npx '].reduce(
-        (acc, replaceMe) =>
-          cmd.startsWith(replaceMe) ? acc.slice(replaceMe.length - 1) : acc,
+        (acc, replaceMe) => (cmd.startsWith(replaceMe) ? acc.slice(replaceMe.length - 1) : acc),
         cmd
       )
       title = `/${lastPathItem}: $ ${cmd.trim()}`
@@ -55,18 +54,17 @@ const getKonsoleArguments = (options: TnewinOptions): string => {
   return argsStr ? `${argsStr} ` : ``
 }
 
-export const getGnomeArguments = (options: TnewinOptions): string =>{
-  const tabOrWindow: string = options.newTab? '--tab': '--window'
-  const title: string = options.title? options.title : 'newin gnome'
-  const workdir: string = options.workdir? options.workdir : '.'
-  return  `${tabOrWindow} --title="${title}" --working-directory=${workdir}`
+export const getGnomeArguments = (options: TnewinOptions): string => {
+  const tabOrWindow: string = options.newTab ? '--tab' : '--window'
+  const title: string = options.title ? options.title : 'newin gnome'
+  const workdir: string = options.workdir ? options.workdir : '.'
+  return `${tabOrWindow} --title="${title}" --working-directory=${workdir}`
 }
 
 // paths starting with "driveLetter:\xxx" or Unix home "~" or Unix path "/xxx..."
 export const absolutePathRegExp = /^(\w:[\\\/].*)|(^[~\/]\/?.*)/
 
 export const getFullCommandWindows = (cmd, options: TnewinOptions): string => {
-
   if (!options.workdir) options.workdir = '.'
   let fullCommand
   const wtBashCmds = [`source /etc/environment`]
@@ -76,11 +74,15 @@ export const getFullCommandWindows = (cmd, options: TnewinOptions): string => {
 
   // replace "Z:/some/path" => "\\\\wsl.localhost\\ubuntara/some/path
   const driveLetters = Object.keys(options.mappedDrives || {})
-  driveLetters.forEach(driveLetter => {
-    const upperCaseDriveLetter = driveLetter.toUpperCase();
-    const resolvedDirUpperCaseDriveLetter = options.resolvedDir[0].toUpperCase() + options.resolvedDir.slice(1)
+  driveLetters.forEach((driveLetter) => {
+    const upperCaseDriveLetter = driveLetter.toUpperCase()
+    const resolvedDirUpperCaseDriveLetter =
+      options.resolvedDir[0].toUpperCase() + options.resolvedDir.slice(1)
     if (resolvedDirUpperCaseDriveLetter.startsWith(upperCaseDriveLetter + ':')) {
-      options.resolvedDir = resolvedDirUpperCaseDriveLetter.replace(upperCaseDriveLetter + ':', options.mappedDrives[driveLetter].path)
+      options.resolvedDir = resolvedDirUpperCaseDriveLetter.replace(
+        upperCaseDriveLetter + ':',
+        options.mappedDrives[driveLetter].path
+      )
     }
   })
 
@@ -92,18 +94,21 @@ export const getFullCommandWindows = (cmd, options: TnewinOptions): string => {
   }
 
   if (cmd) {
-    if (options.echo)
-      wtBashCmds.push(`echo '(newin ${isWSL() ? 'WSL' : 'Windows'}) $ ${cmd}'`)
+    if (options.echo) wtBashCmds.push(`echo '(newin ${isWSL() ? 'WSL' : 'Windows'}) $ ${cmd}'`)
     wtBashCmds.push(cmd) // execute cmd and quit
   } else wtBashCmds.push(`exec bash 2>&1`) // empty bash waiting for input, if no cmd is given
 
-  fullCommand = `wt.exe ${getWindowsArguments(options, cmd)}bash -c "${wtBashCmds.join(' && ')}"`
+  fullCommand = `wt.exe ${getWindowsArguments(options, cmd)}bash -c "${wtBashCmds.join(
+    ' && '
+  )}"`
   return fullCommand
 }
 
 export const getFullKonsoleCommand = (cmd, options: TnewinOptions): string => {
   if (!options.workdir) options.workdir = '.'
 
-  const fullCommand = `konsole ${getKonsoleArguments(options)}--show-tabbar --hide-menubar --workdir "${options.workdir}" ${cmd ? '-e ' : ''}"${cmd}" &`
+  const fullCommand = `konsole ${getKonsoleArguments(
+    options
+  )}--show-tabbar --hide-menubar --workdir "${options.workdir}" ${cmd ? '-e ' : ''}"${cmd}" &`
   return fullCommand
 }
