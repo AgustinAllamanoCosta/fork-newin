@@ -32,7 +32,6 @@ const buildLinux = (cmd: string, debug:boolean, options: TnewinOptions) => {
 }
 
 const selectLinuxStrategy = (terminalType: string): TermianlStrategy => {
-    console.log(terminalType)
     switch (terminalType) {
         case('xterm-256color'):
             return gnomeStrategy
