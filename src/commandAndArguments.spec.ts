@@ -11,8 +11,9 @@ TnewinOptions:
   title: string
   workdir: string
  */
-import { absolutePathRegExp, getFullCommandWindows, getFullKonsoleCommand, TnewinOptions } from './commandAndArguments'
+import { absolutePathRegExp, getFullCommandWindows, getFullKonsoleCommand } from './commandAndArguments'
 import * as process from 'node:process'
+import { TnewinOptions } from 'types/types'
 
 describe('neWin Linux', () => {
   describe.each(

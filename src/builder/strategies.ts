@@ -1,12 +1,14 @@
-import { getFullKonsoleCommand, TnewinOptions } from "../commandAndArguments";
+import { TermianlStrategy, TnewinOptions } from "types/types";
+import { getFullKonsoleCommand, getGnomeArguments } from "../commandAndArguments";
 
-type TermianlStrategy = (cmds: Array<string>, options: TnewinOptions) => {}
-
-export const konsoleStrategy: TermianlStrategy = (cmds, options: TnewinOptions) => {
-    const allFullCommands = cmds.map((cmd) => {getFullKonsoleCommand(cmd, options)}).join('\n')
+export const konsoleStrategy: TermianlStrategy = (cmd: string, options: TnewinOptions): string => {
+    const allFullCommands = getFullKonsoleCommand(cmd, options)
     return allFullCommands;
 };
 
-export const gnomeStrategy: TermianlStrategy = (cmds, options: TnewinOptions) => {
-    return 'gnome comands :D';
+export const gnomeStrategy: TermianlStrategy = (cmd: string, options: TnewinOptions): string => {
+    const temrinalHeader: string = 'gnome-terminal'
+    const terminalOptions: string = getGnomeArguments(options)
+    const close: string = options.close ? '' : 'exec bash'
+    return `${temrinalHeader} ${terminalOptions} --hide-menubar -- bash -c '${cmd}; ${close}'`
 };

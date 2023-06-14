@@ -2,15 +2,15 @@
 import * as process from 'node:process'
 import { Command } from 'commander'
 
-import { TnewinOptions } from './commandAndArguments'
 import { terminalBuilder } from './builder/terminalBuilder'
 import { DESCRIPTION } from './immutable'
-import { execCallback } from 'utils'
+import { execCallback } from './utils'
 import { exec } from 'node:child_process'
+import { TnewinOptions } from './types/types'
 
-const debug = false
+const debug: boolean = false
 
-const program = new Command()
+const program: Command = new Command()
 program
   .description(
     DESCRIPTION
@@ -47,7 +47,7 @@ It defaults to <lastPath>: $ <bashCmd>
     'Use this profile, by name. NOTE: on Windows Terminal, it uses the profile settings (colors, fonts etc) BUT RUNS ON CURRENT DISTRO, for some esoteric Microsoft reason ;-('
   )
   .option('--debug', 'Enable debugging, outputs the command(s) before executing.')
-  .action(async (cmds, options: TnewinOptions) => {
+  .action(async (cmds: Array<string>, options: TnewinOptions) => {
     // prettier-ignore
     if (debug || options.debug)
       console.log('neWin DEBUG: executing', cmds.length, 'commands:\n', cmds.join('\n'))
@@ -57,10 +57,10 @@ It defaults to <lastPath>: $ <bashCmd>
 
     if (cmds.length === 0) cmds.push('')
 
-    const terminals: Array<any> = await terminalBuilder(cmds,debug,options)
-    terminals.forEach((terminal)=>{
+    for(const cmd of cmds){
+      const terminal: string = await terminalBuilder(cmd, debug, options)
       exec(terminal, execCallback)
-    })
+    }
     process.exit(0)
 
   })

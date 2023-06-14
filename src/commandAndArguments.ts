@@ -1,25 +1,10 @@
 import * as process from 'node:process'
+import { TnewinOptions } from 'types/types'
 import * as upath from 'upath'
-import * as networkDrive from 'windows-network-drive'
 
 export const isWindows = () => process.platform === 'win32'
 export const isWSL = () => !!process.env.WSL_INTEROP
 export const isWSLOrWindows = () => isWindows() || isWSL()
-
-export type TnewinOptions = {
-  close?: boolean
-  echo?: boolean
-  color?: string
-  debug?: boolean
-  newTab?: boolean
-  profile?: string
-  resolvedDir?: string
-  separate?: boolean
-  title?: string
-  notitle?: boolean
-  workdir?: string
-  mappedDrives?: Awaited<ReturnType<typeof networkDrive.list>> // { driveLetter: string, path: string, ...}
-}
 
 const getWindowsArguments = (options: TnewinOptions, cmd: string): string => {
   const wtArgs = []
@@ -56,7 +41,7 @@ const getWindowsArguments = (options: TnewinOptions, cmd: string): string => {
   return argsStr ? `${argsStr} ` : ``
 }
 
-const getLinuxArguments = (options: TnewinOptions, cmd: string): string => {
+const getKonsoleArguments = (options: TnewinOptions): string => {
   const wtArgs = []
   if (options.newTab) wtArgs.push(isWSLOrWindows() ? `-w 0` : '--new-tab')
 
@@ -68,6 +53,13 @@ const getLinuxArguments = (options: TnewinOptions, cmd: string): string => {
 
   const argsStr = wtArgs.join(' ')
   return argsStr ? `${argsStr} ` : ``
+}
+
+export const getGnomeArguments = (options: TnewinOptions): string =>{
+  const tabOrWindow: string = options.newTab? '--tab': '--window'
+  const title: string = options.title? options.title : 'newin gnome'
+  const workdir: string = options.workdir? options.workdir : '.'
+  return  `${tabOrWindow} --title="${title}" --working-directory=${workdir}`
 }
 
 // paths starting with "driveLetter:\xxx" or Unix home "~" or Unix path "/xxx..."
@@ -112,9 +104,6 @@ export const getFullCommandWindows = (cmd, options: TnewinOptions): string => {
 export const getFullKonsoleCommand = (cmd, options: TnewinOptions): string => {
   if (!options.workdir) options.workdir = '.'
 
-  const fullCommand = `konsole ${getLinuxArguments(
-    options,
-    cmd
-  )}--show-tabbar --hide-menubar --workdir "${options.workdir}" ${cmd ? '-e ' : ''}"${cmd}" &`
+  const fullCommand = `konsole ${getKonsoleArguments(options)}--show-tabbar --hide-menubar --workdir "${options.workdir}" ${cmd ? '-e ' : ''}"${cmd}" &`
   return fullCommand
 }

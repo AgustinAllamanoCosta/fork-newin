@@ -1,8 +1,10 @@
-import { getFullCommandWindows, getFullKonsoleCommand, isWSLOrWindows, TnewinOptions } from '../commandAndArguments';
-import { terminalBuilder } from './terminalBuilder';
+import { TnewinOptions } from 'types/types'
+import { getFullCommandWindows, getFullKonsoleCommand, isWSLOrWindows } from '../commandAndArguments'
+import { terminalBuilder } from './terminalBuilder'
 
-jest.mock('node:child_process');
-jest.mock('../commandAndArguments');
+jest.mock('node:child_process')
+jest.mock('../commandAndArguments')
+
 const mockIsWSLOrWindows = isWSLOrWindows as jest.Mock
 const mockGetFullCommandWindows = getFullCommandWindows as jest.Mock
 const mockGetFullKonsoleCommand = getFullKonsoleCommand as jest.Mock
@@ -17,13 +19,13 @@ describe('Terminal Builder', () => {
         it('When the terminalBuilder function is called should generate a full command for windows OS', async () => {
             mockIsWSLOrWindows.mockReturnValue(true)
 
-            const cmds: Array<string> =['npm run start:watch']
+            const cmd: string = 'npm run start:watch'
             const debug: boolean = false
             const options: TnewinOptions = { workdir: '~/project', close: true }
 
-            await terminalBuilder(cmds, debug, options)
+            await terminalBuilder(cmd, debug, options)
 
-            expect(mockGetFullCommandWindows).toHaveBeenCalledWith(cmds[0],options)
+            expect(mockGetFullCommandWindows).toHaveBeenCalledWith(cmd,options)
         })
     })
 
@@ -31,13 +33,14 @@ describe('Terminal Builder', () => {
         it('When the terminalBuilder function is called should generate a full command for linux OS', async () => {
             mockIsWSLOrWindows.mockReturnValue(false)
 
-            const cmds: Array<string> =['npm run start:watch']
+            const cmd: string = 'npm run start:watch'
             const debug: boolean = false
             const options: TnewinOptions = { workdir: '~/project', close: true }
+            process.env.TERM = "konsole"
 
-            await terminalBuilder(cmds, debug, options)
+            await terminalBuilder(cmd, debug, options)
 
-            expect(mockGetFullKonsoleCommand).toHaveBeenCalledWith(cmds[0],options)
+            expect(mockGetFullKonsoleCommand).toHaveBeenCalledWith(cmd,options)
         })
     })
 })
