@@ -1,7 +1,7 @@
 import { gnomeStrategy, konsoleStrategy } from './strategies'
 import * as networkDrive from 'windows-network-drive'
 import { getFullCommandWindows, isWSL, isWSLOrWindows } from '../commandAndArguments'
-import { TermianlStrategy, TnewinOptions } from 'types/types'
+import { TerminalStrategy, TnewinOptions } from 'types/types'
 
 export const terminalBuilder = async (cmd: string, debug: boolean, options: TnewinOptions) => {
   if (isWSLOrWindows()) {
@@ -26,7 +26,7 @@ const buildWindows = async (cmd: string, debug: boolean, options: TnewinOptions)
 const buildLinux = (cmd: string, debug: boolean, options: TnewinOptions) => {
   const terminal = process.env.TERM
 
-  const buildCommand: TermianlStrategy = selectLinuxStrategy(terminal)
+  const buildCommand: TerminalStrategy = selectLinuxStrategy(terminal)
   const terminals = buildCommand(cmd, options)
 
   if (debug || options.debug)
@@ -34,7 +34,7 @@ const buildLinux = (cmd: string, debug: boolean, options: TnewinOptions) => {
   return terminals
 }
 
-const selectLinuxStrategy = (terminalType: string): TermianlStrategy => {
+const selectLinuxStrategy = (terminalType: string): TerminalStrategy => {
   switch (terminalType) {
     case 'gnome-terminal':
       return gnomeStrategy

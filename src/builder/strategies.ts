@@ -1,7 +1,7 @@
-import { TermianlStrategy, TnewinOptions } from 'types/types'
+import { TerminalStrategy, TnewinOptions } from 'types/types'
 import { getFullKonsoleCommand, getGnomeArguments } from '../commandAndArguments'
 
-export const konsoleStrategy: TermianlStrategy = (
+export const konsoleStrategy: TerminalStrategy = (
   cmd: string,
   options: TnewinOptions
 ): string => {
@@ -9,12 +9,12 @@ export const konsoleStrategy: TermianlStrategy = (
   return allFullCommands
 }
 
-export const gnomeStrategy: TermianlStrategy = (
+export const gnomeStrategy: TerminalStrategy = (
   cmd: string,
   options: TnewinOptions
 ): string => {
-  const temrinalHeader: string = 'gnome-terminal'
+  const terminalHeader: string = 'gnome-terminal'
   const terminalOptions: string = getGnomeArguments(options)
   const close: string = options.close ? '' : 'exec bash'
-  return `${temrinalHeader} ${terminalOptions} --hide-menubar -- bash -c '${cmd}; ${close}'`
+  return `${terminalHeader} ${terminalOptions} --hide-menubar -- bash -c '${cmd}; ${close}'`
 }

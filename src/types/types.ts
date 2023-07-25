@@ -15,4 +15,4 @@ export type TnewinOptions = {
   mappedDrives?: Awaited<ReturnType<typeof networkDrive.list>> // { driveLetter: string, path: string, ...}
 }
 
-export type TermianlStrategy = (cmd: string, options: TnewinOptions) => string
+export type TerminalStrategy = (cmd: string, options: TnewinOptions) => string
